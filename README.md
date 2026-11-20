@@ -1,7 +1,9 @@
 swagger-tracker
 ===============
 
-Renovate preset `renovate-swaggerhub.json` and node cli to track an Open API specification on Swaggerhub.
+Track an Open API specification on Swaggerhub using:  
+*   renovate preset `renovate-swaggerhub.json` to track versions
+*   cli to track versions and download specification
 
 How to use / getting started
 ----------------------------
@@ -28,4 +30,3 @@ Develop using node scripts primarily: `node ./swagger-tracker-cli.mjs help`
 Open Pull requests for changes.  
 
 **BEWARE**: version in package.json may be tampered when running the cli, and workflow may not update after release+publish
-
