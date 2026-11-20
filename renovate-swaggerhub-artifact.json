@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>statens-pensjonskasse/renovate-presets:recommended",
+    "github>statens-pensjonskasse/renovate-presets:hold_back"
+  ],
+  "customManagers": [
+    {
+      "customType": "jsonata",
+      "description": "SwaggerHub API in swaggerhub-tracker.json, desired version from registry was the latest on last scan",
+      "fileFormat": "json",
+      "managerFilePatterns": ["/^swaggerhub-tracker\\.json$/"],
+      "matchStrings": [
+        "{ \"depName\": registry, \"registryUrl\": registry, \"currentValue\": desiredVersion }"
+      ],
+      "datasourceTemplate": "custom.swaggerhub"
+    }
+  ],
+  "customDatasources": {
+    "swaggerhub": {
+      "transformTemplates": [
+        "{\"releases\": apis.{\"version\": properties[type='X-Version'].value}}"
+      ]
+    }
+  }
+}

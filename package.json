@@ -1,0 +1,31 @@
+{
+  "name": "@statens-pensjonskasse/swagger-tracker",
+  "version": "0.0.1",
+  "description": "CLI tools for tracking an Open API specification on Swaggerhub",
+  "license": "MIT",
+  "_README_": [
+    "*****************************************************************************",
+    "No scripts or dependencies here, just a cli tool to be used in other projects",
+    "See: swagger-tracker-cli.mjs",
+    "*****************************************************************************"
+  ],
+  "type": "module",
+  "bin": {
+    "swagger-tracker-cli": "swagger-tracker-cli.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "swagger-tracker-cli.mjs",
+    "src"
+  ],
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/statens-pensjonskasse/swagger-tracker.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
