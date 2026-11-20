@@ -1,11 +1,13 @@
 /************************************************
-// process API properties in swagger-tracker.json
+// process API properties in api-tracker.json
 *************************************************/
 
 import {repoName} from "./git.mjs";
 import {updatePackageVersion} from "./package.mjs";
 import {fetchJson, fetchYaml, readJsonFile, writeJsonFile, writeFile} from "./resourceIO.mjs";
 import {apiVersions} from "./swaggerhub.mjs";
+
+const metaFile = 'api-tracker.json';
 
 function bootstrapJson() {
     const downloadName = repoName()
@@ -23,7 +25,7 @@ function bootstrapJson() {
 }
 
 
-/** If swagger-tracker.json does not exist, create it with bootstrap content */
+/** If api-tracker.json does not exist, create it with bootstrap content */
 function establishApiProperties() {
     try {
         return swaggerTracker();
@@ -31,22 +33,22 @@ function establishApiProperties() {
         if (error.code !== 'ENOENT') {
             throw error;
         }
-        writeJsonFile('swagger-tracker.json', bootstrapJson());
-        console.log(`swagger-tracker.json generated with bootstrap content. Please edit to match your API and project.`);
+        writeJsonFile(metaFile, bootstrapJson());
+        console.log(`${metaFile} generated with bootstrap content. Please edit to match your API and project.`);
         return establishApiProperties()
     }
 }
 
 function swaggerTracker() {
-    const apiArtifact = readJsonFile('swagger-tracker.json');
+    const apiArtifact = readJsonFile(metaFile);
     if (!apiArtifact.registry) {
-        throw new Error(`Missing registry in swagger-tracker.json`);
+        throw new Error(`Missing registry in ${metaFile}`);
     }
     if (!apiArtifact.desiredVersion) {
-        throw new Error(`Missing desiredVersion in swagger-tracker.json`);
+        throw new Error(`Missing desiredVersion in ${metaFile}`);
     }
     if (!apiArtifact.localJson) {
-        throw new Error(`Missing localJson in swagger-tracker.json`);
+        throw new Error(`Missing localJson in ${metaFile}`);
     }
     return apiArtifact;
 }
@@ -103,15 +105,15 @@ export async function renovateApi() {
     const apiProperties = establishApiProperties();
     const versions = await apiVersions(apiProperties.registry);
     if (apiProperties.desiredVersion === versions.latest) {
-        console.log(`swagger-tracker.json not updated, desiredVersion ${apiProperties.desiredVersion} is latest found on ${apiProperties.registry}`);
+        console.log(`${metaFile} not updated, desiredVersion ${apiProperties.desiredVersion} is latest found on ${apiProperties.registry}`);
     } else {
         // til vi har landa på løsning for versjonering, oppdateres begge mulighetene
         const nextApiRegistry = {
             ...apiProperties,
             desiredVersion: versions.latest
         };
-        writeJsonFile('swagger-tracker.json', nextApiRegistry);
-        console.log(`swagger-tracker.json updated with desiredVersion: ${versions.latest}`);
+        writeJsonFile(metaFile, nextApiRegistry);
+        console.log(`${metaFile} updated with desiredVersion: ${versions.latest}`);
     }
 
 }

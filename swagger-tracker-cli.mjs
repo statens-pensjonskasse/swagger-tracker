@@ -7,11 +7,11 @@ const [command, ...args] = process.argv.slice(2);
 const helpText = `
 
 From empty project: start with "node ./swagger-tracker-cli.mjs bootstrap"
-then edit swagger-tracker.json as appropriate
+then edit api-tracker.json as appropriate
 
 Usage: "node ./swagger-tracker-cli.mjs <command>"
 Commands:
-  bootstrap     Emits swagger-tracker.json, needed for further work 
+  bootstrap     Emits api-tracker.json, needed for further work 
   renovate-api  Update the OpenAPI specification for the desired version
   update-api    Download the OpenAPI specification for the desired version, update package.json to that version
   help          Show this help message
