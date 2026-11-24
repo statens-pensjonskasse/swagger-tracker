@@ -2,8 +2,9 @@ swagger-tracker
 ===============
 
 Track an Open API specification on Swaggerhub using:  
-*   renovate preset `renovate-swag.json` to track versions
-*   cli to track versions and download specification
+*   renovate preset `renovate-swag.json` to track versions on swaggerhub - updates desired API version 
+*   cli to track versions and install (download) newer specification
+*   reusable workflow to trigger install with commit and push
 
 How to use / getting started
 ----------------------------
@@ -28,5 +29,8 @@ Development
 -----------
 Develop using node scripts primarily: `node ./swag.mjs help`  
 Open Pull requests for changes.  
+**BEWARE** use conventional commits if you want to step up and publish new versions:  
+*   trigger minor bump: "feat:" or "feat(scope)"
+*   trigger major bump: "feat!:", "fix!:", "refactor(scope)!:" or "BREAKING CHANGE".
 
 **BEWARE**: version in package.json may be tampered when running the cli, and workflow may not update after release+publish
