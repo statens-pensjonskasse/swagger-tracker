@@ -2,17 +2,18 @@ swagger-tracker
 ===============
 
 Track an Open API specification on Swaggerhub using:  
-*   renovate preset `renovate-swaggerhub.json` to track versions
-*   cli to track versions and download specification
+*   renovate preset `renovate-swag.json` to track versions on swaggerhub - updates desired API version 
+*   cli to track versions and install (download) newer specification
+*   reusable workflow to trigger install with commit and push
 
 How to use / getting started
 ----------------------------
 ### Node scripts
 Scripts may be run on ci or locally on developer PC with appropriate Node installation, like so:
-* `node swagger-tracker-cli.mjs help`
-* `npx @statens-pensjonskasse/swagger-tracker help`
+* `node swag.mjs help`
+* TODO: `npx @statens-pensjonskasse/swagger-tracker help`
 
-Get started by generating bootstrap setup: `node ./swagger-tracker-cli.mjs bootstrap`, then edit generated file as appropriate.  
+Get started by generating bootstrap setup: `node ./swag.mjs bootstrap`, then edit generated file as appropriate.  
 Example of use in [skatt-inntekt-api](https://github.com/statens-pensjonskasse/skatt-inntekt-api)
 
 **Note**: artifact published to github packages under organization "statens-pensjonskasse" may not be available outside of SPK.  
@@ -26,7 +27,10 @@ Errors, problems and wishes may be reported as [issue on GitHub](https://github.
 
 Development
 -----------
-Develop using node scripts primarily: `node ./swagger-tracker-cli.mjs help`  
+Develop using node scripts primarily: `node ./swag.mjs help`  
 Open Pull requests for changes.  
+**BEWARE** use conventional commits if you want to step up and publish new versions:  
+*   trigger minor bump: "feat:" or "feat(scope)"
+*   trigger major bump: "feat!:", "fix!:", "refactor(scope)!:" or "BREAKING CHANGE".
 
 **BEWARE**: version in package.json may be tampered when running the cli, and workflow may not update after release+publish

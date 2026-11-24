@@ -3,13 +3,12 @@
 *************************************************/
 
 import {repoName} from "./git.mjs";
-import {updatePackageVersion} from "./package.mjs";
 import {fetchJson, fetchYaml, readJsonFile, writeJsonFile, writeFile} from "./resourceIO.mjs";
 import {apiVersions} from "./swaggerhub.mjs";
 
 const metaFile = 'api-tracker.json';
 
-function bootstrapJson() {
+function bootstrapJson(apiRegistryUrl) {
     const downloadName = repoName()
     return {
         _README_: [
@@ -17,29 +16,14 @@ function bootstrapJson() {
             "Bootstrap example configuration should be edited to match API and project",
             "*************************************************************************"
         ],
-        registry: "https://api.swaggerhub.com/apis/skatteetaten/inntekt-api",
-        desiredVersion: "1.6.2",
+        registry: `${apiRegistryUrl}`,
+        desiredVersion: "0.0.0",
         localJson: `${downloadName}.json`,
         localYaml: `${downloadName}.yaml`,
     };
 }
 
-
-/** If api-tracker.json does not exist, create it with bootstrap content */
-function establishApiProperties() {
-    try {
-        return swaggerTracker();
-    } catch (error) {
-        if (error.code !== 'ENOENT') {
-            throw error;
-        }
-        writeJsonFile(metaFile, bootstrapJson());
-        console.log(`${metaFile} generated with bootstrap content. Please edit to match your API and project.`);
-        return establishApiProperties()
-    }
-}
-
-function swaggerTracker() {
+function apiTracker() {
     const apiArtifact = readJsonFile(metaFile);
     if (!apiArtifact.registry) {
         throw new Error(`Missing registry in ${metaFile}`);
@@ -53,9 +37,9 @@ function swaggerTracker() {
     return apiArtifact;
 }
 
-function downloadedVersion() {
+export function apiVersion() {
     try {
-        const localJson = swaggerTracker().localJson;
+        const localJson = apiTracker().localJson;
         return readJsonFile(localJson).info?.version;
     } catch (error) {
         if (error.code !== 'ENOENT') {
@@ -65,17 +49,32 @@ function downloadedVersion() {
     }
 }
 
-export async function bootstrap() {
-    const apiProperties = establishApiProperties();
+/** If api-tracker.json does not exist, create it with bootstrap content */
+export async function bootstrap(apiRegistryUrl) {
+    try {
+        // TODO: can update with new url and reset version
+        apiTracker();
+        console.error(`${metaFile} exists, not overwritten.`);
+        return false;
+    } catch (error) {
+        if (error.code !== 'ENOENT') {
+            throw error;
+        }
+    }
+
+    writeJsonFile(metaFile, bootstrapJson(apiRegistryUrl));
+    console.log(`${metaFile} generated with bootstrap content. Please edit to match your API and project.`);
+
     await renovateApi();  // workingDir);
-    await updateSpec();  // workingDir);
+    await installSpec();  // workingDir);
+    return true;
 }
 
 
 /** Download specification for desired version, yaml and json format */
-export async function updateSpec() {
-    const apiProperties = establishApiProperties()
-    const actualVersion = downloadedVersion();
+export async function installSpec() {
+    const apiProperties = apiTracker()
+    const actualVersion = apiVersion();
     const desiredVersion = apiProperties.desiredVersion;
     if ( actualVersion === desiredVersion ) {
         console.log(`API spec not updated. Current version: ${actualVersion}, Desired version: ${desiredVersion}`);
@@ -88,7 +87,7 @@ export async function updateSpec() {
     const apiUrl = versions.url(apiProperties.desiredVersion);
 
 
-    const localFiles = swaggerTracker();
+    const localFiles = apiTracker();
     const yamlUrl = apiUrl + "/swagger.yaml";
     writeFile(localFiles.localYaml, await fetchYaml(yamlUrl));
     console.log(`${yamlUrl} downloaded to ${localFiles.localYaml}`);
@@ -96,13 +95,11 @@ export async function updateSpec() {
     // json file is parsed for currently downloaded version, so we download it after yaml to avoid inconsistent versions
     writeJsonFile(localFiles.localJson, await fetchJson(apiUrl));
     console.log(`${apiUrl} downloaded to ${localFiles.localJson}`);
-
-    updatePackageVersion(apiProperties.desiredVersion);
 }
 
-/** Updates package.json version */
+/** Updates desired version in api-tracker.json */
 export async function renovateApi() {
-    const apiProperties = establishApiProperties();
+    const apiProperties = apiTracker();
     const versions = await apiVersions(apiProperties.registry);
     if (apiProperties.desiredVersion === versions.latest) {
         console.log(`${metaFile} not updated, desiredVersion ${apiProperties.desiredVersion} is latest found on ${apiProperties.registry}`);
