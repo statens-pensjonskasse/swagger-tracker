@@ -11,13 +11,13 @@
   ],
   "type": "module",
   "bin": {
-    "swagger-tracker-cli": "swagger-tracker-cli.mjs"
+    "swag": "swag.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "files": [
-    "swagger-tracker-cli.mjs",
+    "swag.mjs",
     "src"
   ],
   "scripts": {},
