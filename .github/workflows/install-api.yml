@@ -44,7 +44,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.PAT_FOR_PACKAGES_ACCESS }}
         run: |
           npm install # ci will fail if this is a renovate PR
-          node swag.mjs install
+          npx swag install
           git status
           git add -A
 
