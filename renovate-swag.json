@@ -7,9 +7,9 @@
   "customManagers": [
     {
       "customType": "jsonata",
-      "description": "SwaggerHub API in swaggerhub-tracker.json, desired version from registry was the latest on last scan",
+      "description": "SwaggerHub API in api-tracker.json, desired version from registry was the latest on last scan",
       "fileFormat": "json",
-      "managerFilePatterns": ["/^swaggerhub-tracker\\.json$/"],
+      "managerFilePatterns": ["/^api-tracker\\.json$/"],
       "matchStrings": [
         "{ \"depName\": registry, \"registryUrl\": registry, \"currentValue\": desiredVersion }"
       ],
