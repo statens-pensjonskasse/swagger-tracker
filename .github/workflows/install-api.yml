@@ -39,16 +39,23 @@ jobs:
           scope: ${{ inputs.github-org }}
 
       - name: Install desired version of API (if newer)
+        id: build
         env:
-          # PAT_FOR_PACKAGES_ACCESS for install and build - has rights to read org packages, but not write this repo or its packages
-          NODE_AUTH_TOKEN: ${{ secrets.PAT_FOR_PACKAGES_ACCESS }}
+          # litt problematisk for public repo å token med tilgang til package fra annet public repo under samme github organization
+          NODE_AUTH_TOKEN: ${{ secrets.PAT_FOR_PACKAGES_ACCESS || secrets.GITHUB_TOKEN }}
         run: |
-          npm install # ci will fail if this is a renovate PR
-          npx swag install
+          npx --yes --package="@statens-pensjonskasse/swagger-tracker@^0.2.2" swag install
           git status
           git add -A
+          # dirty=true if anything is staged for commit (modified, added or deleted files)
+          if git diff --cached --quiet; then
+            echo "dirty=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "dirty=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Commit and push changes
+        if: steps.build.outputs.dirty == 'true'
         uses: statens-pensjonskasse/gha-create-signed-commit@7b9e477ae72b66627fb37db6b841f0e31d3d965e # v0.1.5
         with:
           # GITHUB_TOKEN for commit, push, deploy - has rights to write this repo and its packages, but not rights to read org packages
