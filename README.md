@@ -2,18 +2,26 @@ swagger-tracker
 ===============
 
 Track an Open API specification on Swaggerhub using:  
-*   renovate preset `renovate-swag.json` to track versions on swaggerhub - updates desired API version 
-*   cli to track versions and install (download) newer specification
-*   reusable workflow to trigger install with commit and push
+*   renovate presets to track versions on swaggerhub - updates desired API version 
+*   clis to track versions and install (download) newer specification
+*   reusable workflows run install with commit and push
 
 How to use / getting started
 ----------------------------
-### Node scripts
-Scripts may be run on ci or locally on developer PC with appropriate Node installation, like so:
-* `node swag.mjs help`
-* TODO: `npx @statens-pensjonskasse/swagger-tracker help`
+Make or Node scripts - your choice.
 
-Get started by generating bootstrap setup: `node ./swag.mjs bootstrap`, then edit generated file as appropriate.  
+### Make
+Copy Makefile and make.properties into you repo, edit as appropriate.  
+Locally (*nix, MacOS): Run `make help` and figure it out.  
+CI (github): call to reusable workflow make-install-api.yml with permissions `contents: write`  
+Renovate: extend renovate-makefile.json
+
+### Node
+Install (dev dependency) statens-pensjonskasse/swagger-tracker.  
+Locally (*nix, MacOS): Run `node swag.mjs help` and figure it out (hint: bootstrap).  
+CI (github): call to reusable workflow install-api.yml with permissions `contents: write` and `packages: read`  
+For Mend renovate: extend renovate-swag.json
+
 Example of use in [skatt-inntekt-api](https://github.com/statens-pensjonskasse/skatt-inntekt-api)
 
 **Note**: artifact published to github packages under organization "statens-pensjonskasse" may not be available outside of SPK.  
@@ -27,7 +35,6 @@ Errors, problems and wishes may be reported as [issue on GitHub](https://github.
 
 Development
 -----------
-Develop using node scripts primarily: `node ./swag.mjs help`  
 Open Pull requests for changes.  
 **BEWARE** use conventional commits if you want to step up and publish new versions:  
 *   trigger minor bump: "feat:" or "feat(scope)"

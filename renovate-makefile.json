@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "SwaggerHub API in make.properties: SWAG_DESIRED_VERSION is set to the latest version on SWAG_REGISTRY",
+      "managerFilePatterns": ["/(^|/)make\\.properties$/"],
+      "matchStrings": [
+        "SWAG_REGISTRY *= *(?<depName>\\S+)[\\s\\S]*?SWAG_DESIRED_VERSION *= *(?<currentValue>\\S+)"
+      ],
+      "registryUrlTemplate": "{{{depName}}}",
+      "datasourceTemplate": "custom.swaggerhub"
+    }
+  ],
+  "customDatasources": {
+    "swaggerhub": {
+      "transformTemplates": [
+        "{\"releases\": apis.{\"version\": properties[type='X-Version'].value}}"
+      ]
+    }
+  }
+}
